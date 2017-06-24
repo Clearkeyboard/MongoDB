@@ -118,7 +118,7 @@ app.get("/articles/:id", function(req, res) {
 
   // then responds with the article with the note included
 var article = req.params.id;
-Article.find({'_id': req.params.id}).populate("note").exec(function(error, doc) {
+Article.findOne({'_id': req.params.id}).populate("note").exec(function(error, doc) {
   if (error) {
     res.send(error);
   }
@@ -147,7 +147,7 @@ newNote.save(function(error, doc) {
     res.send(error);
   }
   else {
-    Article.findByIdAndUpdate({'_id':req.params.id}, {"note": doc._id }).exec(function(err, doc) {
+    Article.findOneAndUpdate({'_id':req.params.id}, {"note": doc._id }).exec(function(err, doc) {
       if (err) {
         console.log(err);
       }
