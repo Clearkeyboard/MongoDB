@@ -1,19 +1,10 @@
-/* Scrape and Display (18.3.8)
- * (If you can do this, you should be set for your hw)
- * ================================================== */
-
-// STUDENTS:
-// Please complete the routes with TODOs inside.
-// Your specific instructions lie there
-
-// Good luck!
 
 // Dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+var ObjectId = require('mongojs').ObjectedID;
 // Requiring our Note and Article models
-var Note = require("./models/Note.js");
 var Article = require("./models/Article.js");
 // Our scraping tools
 var request = require("request");
@@ -21,6 +12,8 @@ var cheerio = require("cheerio");
 // Set mongoose to leverage built in JavaScript ES6 Promises
 mongoose.Promise = Promise;
 
+// Require handlebars
+var exphbs = require('express-handlebars');
 // Initialize Express
 var app = express();
 
@@ -30,11 +23,19 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
+// Create ExpressHandlebars instance with a default layout.
+var hbs = exphbs.create({
+  defaultLayout: 'main'
+})
+// Set up view engine
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
 // Make public a static dir
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/mongoosehomework");
+mongoose.connect("mongodb://localhost/scraper");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -50,9 +51,6 @@ db.once("open", function() {
 
 // Routes
 // ======
-
-// A GET request to scrape the echojs website
-app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with request
   request('https://www.reddit.com/r/ProgrammerHumor/', function(error, response, html) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -85,38 +83,22 @@ app.get("/scrape", function(req, res) {
 
     });
   });
-  // Tell the browser that we finished scraping the text
-  res.send("Scrape Complete");
-});
 
-// This will get the articles we scraped from the mongoDB
-app.get("/articles", function(req, res) {
+app.get("/", function(req, res) {
 
-
-  // TODO: Finish the route so it grabs all of the articles
-Article.find({}, function(error, doc) {
-  if (error) {
-    res.send(error);
-  }
-  else {
-    res.send(doc);
-  }
-});
-
+    Article.find({}, function(error, data) {
+      if (error) {
+        res.send(error);
+      }
+      else {
+          res.render('index', data)
+        }
+  });
 });
 
 // This will grab an article by it's ObjectId
 app.get("/articles/:id", function(req, res) {
 
-
-  // TODO
-  // ====
-
-  // Finish the route so it finds one article using the req.params.id,
-
-  // and run the populate method with "note",
-
-  // then responds with the article with the note included
 var article = req.params.id;
 Article.findOne({'_id': req.params.id}).populate("note").exec(function(error, doc) {
   if (error) {
@@ -130,36 +112,27 @@ Article.findOne({'_id': req.params.id}).populate("note").exec(function(error, do
 });
 
 // Create a new note or replace an existing note
-app.post("/articles/:id", function(req, res) {
-
-
-  // TODO
-  // ====
-
-  // save the new note that gets posted to the Notes collection
-
-  // then find an article from the req.params.id
-
-  // and update it's "note" property with the _id of the new note
-var newNote = new Note(req.body);
-newNote.save(function(error, doc) {
-  if (error) {
-    res.send(error);
-  }
-  else {
-    Article.findOneAndUpdate({'_id':req.params.id}, {"note": doc._id }).exec(function(err, doc) {
-      if (err) {
-        console.log(err);
+app.post("/articles/:id/comment", function(req, res) {
+  //Find the article to add a note to by ID
+  Article.findByIdAndUpdate(
+    req.params.id,
+    // Push to the empty array of Notes
+    {$push: {
+      //Note object to push into Note Array
+      note: {
+        noteTitle: req.body.title,
+        body: req.body.text,
+        user: req.body.user
       }
-      else {
-        res.send(doc);
-      }
-    })
-  }
-})
+    }},
+    //Upsert creates new data each time instead of overwriting existing
+    {upsert: true, new: true},
+    function(err, data) {
+      if (err) return console.log(err);
+      res.json(data.note)
+    }
+  )
 });
-
-
 // Listen on port 3000
 app.listen(3000, function() {
   console.log("App running on port 3000!");

@@ -1,0 +1,11 @@
+<div id="wrapper">
+      <h1>Note Scraper</h1>
+      <h2><i>If you can do this...a job should be no problem?</i>
+      </h2>  
+        <div id="articles">
+            {{#each this}}
+            <p data-id='{{_id}}'> {{title}}  <br />  {{link}}  </p>
+            {{/each}}
+        </div>
+      <div id="notes"></div>
+</div>
