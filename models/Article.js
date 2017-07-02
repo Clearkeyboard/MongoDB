@@ -17,10 +17,6 @@ var ArticleSchema = new Schema({
   },
 
   note: [{
-  // Just a string
-    noteTitle: {
-      type: String
-    },
     // Just a string
     body: {
       type: String

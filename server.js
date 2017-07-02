@@ -51,6 +51,7 @@ db.once("open", function() {
 
 // Routes
 // ======
+app.get('/scrape', function(req, res) {
   // First, we grab the body of the html with request
   request('https://www.reddit.com/r/ProgrammerHumor/', function(error, response, html) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -75,14 +76,11 @@ db.once("open", function() {
         if (err) {
           console.log(err);
         }
-        // Or log the doc
-        else {
-          console.log(doc);
-        }
       });
-
     });
-  });
+  })
+  res.redirect('/');
+});
 
 app.get("/", function(req, res) {
 
@@ -100,7 +98,7 @@ app.get("/", function(req, res) {
 app.get("/articles/:id", function(req, res) {
 
 var article = req.params.id;
-Article.findOne({'_id': req.params.id}).populate("note").exec(function(error, doc) {
+Article.findOne({'_id': article}).populate("note").exec(function(error, doc) {
   if (error) {
     res.send(error);
   }
@@ -120,8 +118,7 @@ app.post("/articles/:id/comment", function(req, res) {
     {$push: {
       //Note object to push into Note Array
       note: {
-        noteTitle: req.body.title,
-        body: req.body.text,
+        body: req.body.body,
         user: req.body.user
       }
     }},

@@ -1,11 +1,46 @@
-<div id="wrapper">
-      <h1>Note Scraper</h1>
-      <h2><i>If you can do this...a job should be no problem?</i>
-      </h2>  
-        <div id="articles">
-            {{#each this}}
-            <p data-id='{{_id}}'> {{title}}  <br />  {{link}}  </p>
-            {{/each}}
-        </div>
-      <div id="notes"></div>
+<div class='container-fluid'>
+  <div class='row'>
+    <div class='col-md-6' id="wrapper">
+          <h1 class='text-center'>Note Scraper</h1>
+          <h2 class='text-center'><i>If you can do this...a job should be no problem?</i>
+          </h2>
+          <div class='col-md-12 text-center'><button type='button' id='scrape' class='btn'>Let's Get Scrapin'</button></div>
+          <div class='row'>  
+            <div class='col-md-12 text-center'id="articles">
+                {{#each this}}
+                <p class='nabb' data-id='{{this.id}}' data-toggle='modal' data-target='#{{this._id}}'> {{this.title}}</p>  
+                <a href={{this.link}}>{{this.link}}</a>
+                <div id='{{this._id}}' class="modal fade modal-sm2">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Comments and WhatNot</h4>O_o
+                      </div>
+                      <div class="modal-body">
+                          <div id='comments'></div>
+                      </div>
+                      <div class="modal-footer">
+                        <div class="form-group row">
+                         <label for="username" class="col-4 col-form-label">UserName</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="username">
+                          </div>
+                          <label for='body' class='col-4 col-form-label'>Comment</label>
+                          <div class='col-8'>
+                            <textarea class='form-control form-control-sm' id='bodyinput'></textarea>
+                          </div>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button data-id='{{_id}}' class='btn btn-default' id='savenote'>Save Note</button>
+                      </div>
+                    </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                {{/each}}
+            </div>
+          </div>
+          <div id="notes"></div>
+    </div>
+  </div>
 </div>

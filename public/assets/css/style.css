@@ -9,7 +9,7 @@
         display: inline-block;
         overflow: auto;
         width: 60%;
-        height: 700px;
+        height: 500px;
       }
       #notes {
         float: right;
@@ -27,4 +27,12 @@
       textarea {
         height: 200px;
         font-size: 18px;
+      }
+      p {
+        margin-bottom: 0;
+        margin-top: 16px;
+      }
+      .modal-body {
+        height: 200px;
+        overflow-y: auto;
       }
