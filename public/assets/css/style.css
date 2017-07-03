@@ -1,3 +1,4 @@
+      
       body { background-color: #F2F6D0 }
       #wrapper {
         width: 960px;
@@ -36,3 +37,27 @@
         height: 200px;
         overflow-y: auto;
       }
+      #note {
+        font-size: 15px;
+        font-family: 'Quicksand', sans-serif;
+        margin-bottom: 2px;
+        margin-top: 0px;
+      }
+      .user{
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 25px;
+        float: left;
+      }
+      .field{
+        border-left: 5px solid black;
+        background-color: #F2F6D0; 
+        border-bottom: 1px solid black;
+        margin-bottom: 5px;
+      }
+      #scrape {
+        margin-bottom: 5px;
+      }
+      #delete {
+        margin-top: -48px;
+      }
+      

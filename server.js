@@ -130,6 +130,26 @@ app.post("/articles/:id/comment", function(req, res) {
     }
   )
 });
+
+//Remove comment data from db
+app.post('/remove/:id', function(req, res) {
+  console.log("Attempting to delete from article.." + req.params.id);
+  console.log("Deleting comment  " + req.body._id);
+  Article.findByIdAndUpdate(
+    req.params.id,
+    {$pull: {
+      note: {
+        _id: req.body._id
+      }
+    }},
+    {new: true},
+    function(err, data) {
+      if (err) return console.log(err);
+      
+    }
+  )
+  console.log("Entry Deleted");
+});
 // Listen on port 3000
 app.listen(3000, function() {
   console.log("App running on port 3000!");
